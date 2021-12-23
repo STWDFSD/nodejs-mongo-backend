@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "3dd7464c-e350-48ab-bfa5-53085e4e975d",
+		"name": "MongoBD Nodejs backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET grades",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER_URL}}/api/grades",
+					"host": [
+						"{{SERVER_URL}}"
+					],
+					"path": [
+						"api",
+						"grades"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET DevExpress grades",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER_URL}}/grades?filter=[\n[ \"examScore\", \">\", 80 ],\n  \"and\",\n  [\n    [ \"homeworkScore\", \"<\", 80 ],\n    \"and\",\n    [ \"quizScore\", \">\", 70 ]\n  ]\n]&take=10",
+					"host": [
+						"{{SERVER_URL}}"
+					],
+					"path": [
+						"grades"
+					],
+					"query": [
+						{
+							"key": "filter",
+							"value": "[\n[ \"examScore\", \">\", 80 ],\n  \"and\",\n  [\n    [ \"homeworkScore\", \"<\", 80 ],\n    \"and\",\n    [ \"quizScore\", \">\", 70 ]\n  ]\n]"
+						},
+						{
+							"key": "take",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE grade",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER_URL}}/api/grades/56d5f7eb604eb380b0d8d909",
+					"host": [
+						"{{SERVER_URL}}"
+					],
+					"path": [
+						"api",
+						"grades",
+						"56d5f7eb604eb380b0d8d909"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST grade",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"_id\": \"56d5f7eb604eb380b0d81234\",\n\t\"classId\": 20,\n\t\"studentId\": 10,\n\t\"hexaId\": \"56d5f7eb604eb380b0d81234\",\n\t\"examScore\": 56,\n\t\"homeworkScore\": 46,\n\t\"quizScore\": 80\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SERVER_URL}}/api/grades",
+					"host": [
+						"{{SERVER_URL}}"
+					],
+					"path": [
+						"api",
+						"grades"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT grade",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"examScore\": 99,\n\t\"homeworkScore\": 99,\n\t\"quizScore\": 99\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{SERVER_URL}}/api/grades/56d5f7eb604eb380b0d8d92e",
+					"host": [
+						"{{SERVER_URL}}"
+					],
+					"path": [
+						"api",
+						"grades",
+						"56d5f7eb604eb380b0d8d92e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH grade",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"examScore\": 99,\n\t\"homeworkScore\": 99,\n\t\"quizScore\": 99\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.1.90:8080/api/grades/56d5f7eb604eb380b0d8d936",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"1",
+						"90"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"grades",
+						"56d5f7eb604eb380b0d8d936"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "SERVER_URL",
+			"value": "http://192.168.1.90:8080"
+		}
+	]
+}
