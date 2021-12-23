@@ -5,7 +5,6 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 ## Option 1: VirtualBox Vagrant setup
 - Change directory to the base path of this project.
 - Open the file `Vagrantfile` and edit the `GUEST_IP` value, use an available local network IP, this is the IP address that will be asigned to the virtual machine.
-- Open the file `build.gradle` and edit the `mongo.uri` variable with the local IP address used in the previous step.
 - Execute the `vagrant up` command, once the process completes an Ubuntu-MongoDB virtual machine will be running.
 - [Continue to step 2](#2-run-the-project).
 
