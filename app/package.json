@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "babel-polyfill": "^6.26.0",
+    "cors": "^2.8.5",
+    "devextreme-query-mongodb": "^2.0.15",
+    "express": "^4.17.2",
+    "mongodb": "^4.2.2",
+    "mongoose": "^6.1.3",
+    "morgan": "^1.10.0"
+  },
+  "name": "nodejs-mongo-backend",
+  "version": "1.0.0",
+  "description": "Back-end http server that gets data from a MongoDB collection using a format supported by DevExpress components",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

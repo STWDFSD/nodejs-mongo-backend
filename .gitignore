@@ -1,0 +1,49 @@
+**/build/
+!src/**/build/
+
+.DS_Store
+.classpath
+.settings
+.project
+build/
+bin/
+out/
+*.iml
+*.ipr
+*.iws
+.factorypath
+pom.xml
+target/
+db/
+starth2
+.gradletasknamecache
+.sass-cache/
+.jruby/
+/.java-version
+Expression$*.class
+ratpack-version.txt
+deploy
+.jruby-container
+.idea
+.vagrant/
+*.log
+npm-debug.log*
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
