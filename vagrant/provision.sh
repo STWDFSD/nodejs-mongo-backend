@@ -3,6 +3,7 @@
 VAGRANT_DIR=/vagrant/vagrant
 HOME_DIR=~/
 HOME_BIN_DIR=$HOME_DIR/bin
+APP_HOME_DIR=/var/www/app
 
 installPackage()
 {
@@ -31,13 +32,6 @@ createAndMoveToHomeBinDir()
     echo "Creating and moving to bin directory"
     mkdir $HOME_BIN_DIR
     cd $HOME_BIN_DIR
-}
-
-createBashrcAndBashProfile()
-{
-    echo "Creating .bash_profile"
-    cat $VAGRANT_DIR/bash_profile.template > $HOME_DIR/.bash_profile
-    source $HOME_DIR/.bash_profile
 }
 
 installMongo()
@@ -91,10 +85,15 @@ installNode()
 
     nvm install node
 
+    echo 'npm set prefix $HOME/.npm' >> $HOME/.bashrc
+    echo 'export PATH=$HOME/.npm/bin:$PATH' >> $HOME/.bashrc
+    echo 'export PATH=./node_modules/.bin:$PATH' >> $HOME/.bashrc
+    source $HOME/.bashrc
+
     # PM2 makes it possible to daemonize applications so that they will run in the background as a service
     npm install pm2@latest -g
 
-    cd /var/www/
+#    cd $APP_HOME_DIR
     npm install express
     npm install babel-polyfill
     npm install mongodb
@@ -125,7 +124,7 @@ installNode()
     sudo systemctl start pm2-vagrant
 
     # your application in the background
-    pm2 start /var/www/app.js
+    pm2 start $APP_HOME_DIR/app.js
 
     # save the PM2 process list and corresponding environments
     pm2 save
@@ -135,7 +134,6 @@ provision()
 {
     createAndMoveToHomeBinDir
     installPackages
-    createBashrcAndBashProfile
     installMongo
     initReplicateDB $1
     installNode
