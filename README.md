@@ -89,3 +89,6 @@ try {
    print(e);
 }
 ```
+
+# References
+- https://ryantravitz.com/2018-11-29-server-sent-events/

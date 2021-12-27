@@ -85,15 +85,15 @@ installNode()
 
     nvm install node
 
-    echo 'npm set prefix $HOME/.npm' >> $HOME/.bashrc
-    echo 'export PATH=$HOME/.npm/bin:$PATH' >> $HOME/.bashrc
-    echo 'export PATH=./node_modules/.bin:$PATH' >> $HOME/.bashrc
+    # echo 'npm set prefix $HOME/.npm' >> $HOME/.bashrc
+    # echo 'export PATH=$HOME/.npm/bin:$PATH' >> $HOME/.bashrc
+    # echo 'export PATH=./node_modules/.bin:$PATH' >> $HOME/.bashrc
     source $HOME/.bashrc
 
     # PM2 makes it possible to daemonize applications so that they will run in the background as a service
     npm install pm2@latest -g
 
-#    cd $APP_HOME_DIR
+    cd $APP_HOME_DIR
     npm install express
     npm install babel-polyfill
     npm install mongodb
@@ -141,7 +141,7 @@ provision()
 
 if [ ! -f "/var/vagrant_provision" ]; then
     sudo touch /var/vagrant_provision
-    provision $GUEST_IP
+    provision $1
 else
     echo "Machine already provisioned. Run 'vagrant destroy' and 'vagrant up' to re-create."
 fi

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Demo</title>
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/21.2.3/css/dx.common.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/21.2.3/css/dx.light.css">
+</head>
+<body>
+<h1>Data source</h1>
+<p>The data is being streamed back to the browser using Server-Sent Events.</p>
+<br />
+
+<div class="dx-viewport demo-container">
+  <div id="grid-container">
+    <h2>Please wait, the dataset is being initialized...</h2>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn3.devexpress.com/jslib/21.2.3/js/dx.all.js"></script>
+<script>
+
+var grades = [];
+var gradesStore = [];
+
+function initializeStream(){
+  if(typeof(EventSource) !== "undefined") {
+    var source = new EventSource("/grades/stream");
+    source.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+
+      var operationType = data.operationType.toLowerCase();
+      var gradeData;
+      var gradeKey = data.documentKey._id;
+
+      switch(data.operationType.toUpperCase()) {
+        case "UPDATE":
+          gradeData = getGradeDataFromUpdatedFields(data);
+          break;
+        case "INSERT":
+          gradeData = getGradeDataFromDocument(data);
+          break;
+        case "DELETE":
+          operationType = "remove";
+          break;
+        case "REPLACE":
+          operationType = "update";
+          gradeData = getGradeDataFromDocument(data);
+          break;
+      }
+
+      gradesStore.push([{
+        type: operationType, // datagrid supports insert, update or remove
+        key: gradeKey,
+        data: gradeData,
+      }]);
+    };
+    source.addEventListener('error', function(e) {
+      console.log("error: ", e);
+      if (e.readyState == EventSource.CLOSED) {
+        console.log("error: Connection was closed.");
+      }
+    }, false);
+  } else {
+      document.getElementById("result").innerHTML = "Sorry, your browser does not support server-sent events...";
+  }
+}
+
+
+// Filters are passed as an URL encoded query string
+$.ajax({
+  dataType: "json",
+  contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+  url: "/grades?filter=%5B%0A%5B%20%22examScore%22%2C%20%22%3E%22%2C%2080%20%5D%2C%0A%20%20%22and%22%2C%0A%20%20%5B%0A%20%20%20%20%5B%20%22homeworkScore%22%2C%20%22%3C%22%2C%2080%20%5D%2C%0A%20%20%20%20%22and%22%2C%0A%20%20%20%20%5B%20%22quizScore%22%2C%20%22%3E%22%2C%2070%20%5D%0A%20%20%5D%0A%5D&take=10",
+})
+.done(function(data){
+  $.each(data.data, function(i){
+    grades.push({
+      id: this._id, studentName: "Student " + this.studentId, classId: this.classId, studentId: this.studentId, examScore: this.examScore, quizScore: this.quizScore, homeworkScore: this.homeworkScore,
+    });
+  });
+
+  gradesStore = new DevExpress.data.ArrayStore({
+    key: 'id',
+    data: grades
+  });
+
+  $('#grid-container').dxDataGrid({
+    dataSource: {
+      store: gradesStore,
+      reshapeOnPush: true
+    },
+    repaintChangesOnly: true,
+    highlightChanges: true,
+    columnAutoWidth: true,
+    showBorders: true,
+    paging: {
+      pageSize: 10
+    },
+    columns: [
+      { dataField: 'studentName', dataType: 'string' },
+      { dataField: 'studentId', dataType: 'number' },
+      { dataField: 'classId', dataType: 'number' },
+      {
+        dataField: 'examScore', dataType: 'number', allowSorting: true,
+      },
+      { dataField: 'quizScore', dataType: 'number' },
+      { dataField: 'homeworkScore', dataType: 'number' }
+    ],
+    summary: {
+      totalItems: [{
+        summaryType: 'count',
+        column: 'studentName',
+      }, {
+        summaryType: 'avg',
+        displayFormat: '{0}',
+        column: 'quizScore',
+      }, {
+        summaryType: 'avg',
+        displayFormat: '{0}',
+        column: 'examScore',
+      }, {
+        summaryType: 'avg',
+        displayFormat: '{0}',
+        column: 'homeworkScore',
+      }],
+    }
+  });
+
+  initializeStream();
+})
+.fail(function() {
+  alert( "error getting datagrid initial data!" );
+});
+
+function getGradeDataFromDocument(data){
+  return {
+    id: data.fullDocument._id,
+    studentName: "Student " + data.fullDocument.studentId,
+    classId: data.fullDocument.classId,
+    studentId: data.fullDocument.studentId,
+    examScore: data.fullDocument.examScore,
+    quizScore: data.fullDocument.quizScore,
+    homeworkScore: data.fullDocument.homeworkScore,
+  };
+}
+
+function getGradeDataFromUpdatedFields(data){
+  var obj = data.updateDescription.updatedFields;
+  var keys = Object.keys(obj);
+  var updatedGradeFields = {};
+
+  for (var i = 0; i < keys.length; i++) {
+    updatedGradeFields[keys[i]] = obj[keys[i]];
+  }
+
+  return updatedGradeFields;
+}
+
+</script>
+</body>
+
+</html>
