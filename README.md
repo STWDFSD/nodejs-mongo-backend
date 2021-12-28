@@ -1,4 +1,4 @@
-# nodejs-mongo-backend basic demo app
+# Node.js MongoDB back-end basic demo app.
 Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB collection using the library devextreme-query-mongodb.
 
 # 1. Database server setup
@@ -9,6 +9,9 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 - [Continue to step 2](#2-run-the-project).
 
 ## Option 2: Mongo DB local installation
+<details>
+<summary>Click to expand!</summary>
+
 ### Install Nodejs
 Todo: Document how to install Nodejs  
 ### Install MongoDB
@@ -53,6 +56,7 @@ mongod --replSet rs0 --dbpath /mongodb/data
 ## Import test collection
 Import the [restaurants](https://raw.githubusercontent.com/mongodb/docs-assets/drivers/restaurants.json) collection into the test database as shown in this readme file:
 https://github.com/mongodb/docs-assets/tree/drivers
+</details>
 
 # 2. Run the project
 Once the mongodb server is running you can continue and run this project
