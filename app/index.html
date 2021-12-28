@@ -20,10 +20,15 @@
 <script src="https://cdn3.devexpress.com/jslib/21.2.3/js/dx.all.js"></script>
 <script>
 
-var grades = [];
-var gradesStore = [];
+var gradesStore;
+var isDataLoaded = false;
 
-function initializeStream(){
+// var REST_API = 'http://192.168.1.90:8080/api/grades';
+// var DEV_EXPRESS_API = 'http://192.168.1.90:8080/grades';
+var REST_API = '/api/grades';
+var DEV_EXPRESS_API = '/grades';
+
+function initializeStream() {
   if(typeof(EventSource) !== "undefined") {
     var source = new EventSource("/grades/stream");
     source.onmessage = function(event) {
@@ -66,77 +71,146 @@ function initializeStream(){
   }
 }
 
+var gradesStore = new DevExpress.data.CustomStore({
+  key: '_id',
+  load: function(options) {
+    // https://js.devexpress.com/Documentation/ApiReference/Data_Layer/CustomStore/Configuration/#load
+    // from https://www.devexpress.com/Support/Center/Question/Details/KA18955
+    var params = {};
 
-// Filters are passed as an URL encoded query string
-$.ajax({
-  dataType: "json",
-  contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-  url: "/grades?filter=%5B%0A%5B%20%22examScore%22%2C%20%22%3E%22%2C%2080%20%5D%2C%0A%20%20%22and%22%2C%0A%20%20%5B%0A%20%20%20%20%5B%20%22homeworkScore%22%2C%20%22%3C%22%2C%2080%20%5D%2C%0A%20%20%20%20%22and%22%2C%0A%20%20%20%20%5B%20%22quizScore%22%2C%20%22%3E%22%2C%2070%20%5D%0A%20%20%5D%0A%5D&take=10",
-})
-.done(function(data){
-  $.each(data.data, function(i){
-    grades.push({
-      id: this._id, studentName: "Student " + this.studentId, classId: this.classId, studentId: this.studentId, examScore: this.examScore, quizScore: this.quizScore, homeworkScore: this.homeworkScore,
-    });
-  });
+    if (options.filter) params.filter = JSON.stringify(options.filter);
+    if (options.sort) params.sort = JSON.stringify(options.sort);
 
-  gradesStore = new DevExpress.data.ArrayStore({
-    key: 'id',
-    data: grades
-  });
+    // This generation of the app, we don't distinguish between data grid
+    // and pivot grid data sources, so I'll just set this parameter
+    // globally even though it's really only required for the pivot grid.
+    // Since the query limit feature is mainly a protection against crazy
+    // queries running because of misconfigured grids, this shouldn't be
+    // a problem.
+    // The value is arbitrary. If you anticipate seeing pivot grid setups
+    // with even more summary values per page, increase it or even set to
+    // zero to deactivate the limit.
+    params.summaryQueryLimit = 500;
 
-  $('#grid-container').dxDataGrid({
-    dataSource: {
-      store: gradesStore,
-      reshapeOnPush: true
-    },
-    repaintChangesOnly: true,
-    highlightChanges: true,
-    columnAutoWidth: true,
-    showBorders: true,
-    paging: {
-      pageSize: 10
-    },
-    columns: [
-      { dataField: 'studentName', dataType: 'string' },
-      { dataField: 'studentId', dataType: 'number' },
-      { dataField: 'classId', dataType: 'number' },
-      {
-        dataField: 'examScore', dataType: 'number', allowSorting: true,
-      },
-      { dataField: 'quizScore', dataType: 'number' },
-      { dataField: 'homeworkScore', dataType: 'number' }
-    ],
-    summary: {
-      totalItems: [{
-        summaryType: 'count',
-        column: 'studentName',
-      }, {
-        summaryType: 'avg',
-        displayFormat: '{0}',
-        column: 'quizScore',
-      }, {
-        summaryType: 'avg',
-        displayFormat: '{0}',
-        column: 'examScore',
-      }, {
-        summaryType: 'avg',
-        displayFormat: '{0}',
-        column: 'homeworkScore',
-      }],
+    params.skip = options.skip;
+    params.take = options.take;
+    params.requireTotalCount = options.requireTotalCount;
+
+    if (options.totalSummary)
+      params.totalSummary = JSON.stringify(options.totalSummary);
+
+    // Oliver: this is the projection - outstanding question - do our controls use this?
+    // I haven't seen it so far...
+    if (options.select) params.select = JSON.stringify(options.select);
+
+    // If a user typed something in dxAutocomplete, dxSelectBox or dxLookup (original comment)
+    // The dxDataGrid doesn't use this parameter, it uses "filter" instead...
+    // actually, these options reflect the functionality of "filter" exactly, with the one
+    // exception that searchExpr can be an array of field names, or just one.
+    // I decided to transfer the parameters to the server anyway - could transpose them right here.
+    if (options.searchValue) {
+      params.searchValue = options.searchValue;
+      params.searchOperation = options.searchOperation;
+      params.searchExpr = options.searchExpr;
     }
-  });
 
-  initializeStream();
-})
-.fail(function() {
-  alert( "error getting datagrid initial data!" );
+    if (options.group) {
+      params.group = JSON.stringify(options.group);
+      params.requireGroupCount = options.requireGroupCount;
+      if (options.groupSummary)
+        params.groupSummary = JSON.stringify(options.groupSummary);
+    }
+
+    params.tzOffset = new Date().getTimezoneOffset();
+
+    var d = $.Deferred();
+    console.log('Load options :', params);
+
+    $.getJSON(DEV_EXPRESS_API, params).done(function(res) {
+      //console.log("Static load result: " + JSON.stringify(res));
+
+      var details = {};
+      if (options.requireTotalCount) details.totalCount = res.totalCount;
+      if (options.requireGroupCount) details.groupCount = res.groupCount;
+      if (options.totalSummary) details.summary = res.summary;
+
+      // @TODO: initializeStream() should be called once, after the data is loaded.
+      if(isDataLoaded == false){
+        initializeStream();
+      }
+      isDataLoaded = true;
+      d.resolve(res.data, details);
+    });
+    return d.promise();
+  },
+  byKey: function(key) {
+    return $.getJSON(REST_API + '/' + encodeURIComponent(key));
+  },
+  insert: function(value) {
+    return $.ajax({
+      url: REST_API,
+      method: 'POST',
+      data: JSON.stringify(value),
+      contentType: 'application/json'
+    });
+  },
+  update: function(key, value) {
+    return $.ajax({
+      url: REST_API + '/' + encodeURIComponent(key),
+      method: 'PUT',
+      data: JSON.stringify(value),
+      contentType: 'application/json'
+    });
+  },
+  remove: function(key) {
+    return;
+  }
+});
+
+$('#grid-container').dxDataGrid({
+  dataSource: {
+    store: gradesStore,
+    reshapeOnPush: true
+  },
+  repaintChangesOnly: true,
+  highlightChanges: true,
+  columnAutoWidth: true,
+  showBorders: true,
+  paging: {
+    pageSize: 10
+  },
+  columns: [
+    { dataField: 'studentId', dataType: 'number' },
+    { dataField: 'classId', dataType: 'number' },
+    {
+      dataField: 'examScore', dataType: 'number', allowSorting: true,
+    },
+    { dataField: 'quizScore', dataType: 'number' },
+    { dataField: 'homeworkScore', dataType: 'number' }
+  ],
+  summary: {
+    totalItems: [{
+      summaryType: 'count',
+      column: 'studentId',
+    }, {
+      summaryType: 'avg',
+      displayFormat: '{0}',
+      column: 'quizScore',
+    }, {
+      summaryType: 'avg',
+      displayFormat: '{0}',
+      column: 'examScore',
+    }, {
+      summaryType: 'avg',
+      displayFormat: '{0}',
+      column: 'homeworkScore',
+    }],
+  }
 });
 
 function getGradeDataFromDocument(data){
   return {
     id: data.fullDocument._id,
-    studentName: "Student " + data.fullDocument.studentId,
     classId: data.fullDocument.classId,
     studentId: data.fullDocument.studentId,
     examScore: data.fullDocument.examScore,

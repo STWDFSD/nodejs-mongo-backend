@@ -92,3 +92,4 @@ try {
 
 # References
 - https://ryantravitz.com/2018-11-29-server-sent-events/
+- https://community.devexpress.com/blogs/oliver/archive/2017/04/03/devextreme-real-world-patterns-devextreme-widgets.aspx

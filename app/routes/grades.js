@@ -13,7 +13,7 @@ mongoose.connect(dbConfig.url, {
 
 router.get("/", async(req, res) => {
   try {
-    const grades = await Grade.find().limit(10).sort({ examScore: -1 })
+    const grades = await Grade.find().limit(1000).sort({ examScore: -1 })
     res.send(grades)
   } catch (error) {
     res.status(500).send(error.message);
