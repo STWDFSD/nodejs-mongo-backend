@@ -62,8 +62,18 @@ https://github.com/mongodb/docs-assets/tree/drivers
 Once the mongodb server is running you can continue and run this project
 ## From the Vagrant virtual machine
 The Nodejs server is installed and automatically started within the Vagrant virtual machine. You should be able to access at:  
-`curl -i http://<GUEST_IP>:8080/api/grades`  
+`curl -i http://<GUEST_IP>:8080/api/grades`
 
+### The following endpoints are available for testing:
+
+1. GET /grades: this endpoint uses the library devextreme-query-mongodb to format request/response parameters. So it can be used to test DevExtreme components.
+
+2. (GET, POST, PUT, PATCH, DELETE) /api/grades: this endpoint exposes a basic CRUD functionality.
+
+3. GET /grades/stream: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection (similar to what we have in the Ratpack back-end demo app).
+
+4. GET /frontend: This is an endpoint for testing the back-end endpoints. It responds with an HTML page that displays a list of Grades and dynamically updates the table when a notification (Server-sent event) is received.
+  
 ## From a local Nodejs installation
 You can start the nodejs server by running:  
 `node app`  
