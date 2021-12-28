@@ -163,7 +163,11 @@ var gradesStore = new DevExpress.data.CustomStore({
     });
   },
   remove: function(key) {
-    return;
+    return $.ajax({
+      url: REST_API + '/' + encodeURIComponent(key),
+      method: 'DELETE',
+      contentType: 'application/json'
+    });
   }
 });
 
@@ -179,7 +183,38 @@ $('#grid-container').dxDataGrid({
   paging: {
     pageSize: 10
   },
+  remoteOperations: {
+    filtering: true,
+    grouping: true,
+    groupPaging: true,
+    paging: true,
+    sorting: true,
+    summary: true
+  },
+  editing: {
+    mode: 'batch',
+    allowAdding: true,
+    allowDeleting: true,
+    allowUpdating: true
+  },
+  filterRow: {
+    visible: true
+  },
+  headerFilter: {
+    visible: true
+  },
+  groupPanel: {
+    visible: true
+  },
+  grouping: {
+    autoExpandAll: false
+  },
+  searchPanel: {
+    visible: true,
+    highlightCaseSensitive: true,
+  },
   columns: [
+    { dataField: '_id', dataType: 'string' },
     { dataField: 'studentId', dataType: 'number' },
     { dataField: 'classId', dataType: 'number' },
     {
@@ -210,7 +245,7 @@ $('#grid-container').dxDataGrid({
 
 function getGradeDataFromDocument(data){
   return {
-    id: data.fullDocument._id,
+    _id: data.fullDocument._id,
     classId: data.fullDocument.classId,
     studentId: data.fullDocument.studentId,
     examScore: data.fullDocument.examScore,
