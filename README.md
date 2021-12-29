@@ -61,7 +61,7 @@ https://github.com/mongodb/docs-assets/tree/drivers
 Once the mongodb server is running you can continue and run this project
 ## From the Vagrant virtual machine
 The Nodejs server is installed and automatically started within the Vagrant virtual machine. You should be able to access at:  
-`http://localhost:8080/grades?take=10`
+`http://localhost:8080/frontend`
 
 ### The following endpoints are available for testing:
 
