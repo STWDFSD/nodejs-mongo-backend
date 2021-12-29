@@ -59,8 +59,6 @@ initReplicateDB()
 
     sudo mv /etc/mongod.conf /etc/mongod.conf.bk
     sudo cp $VAGRANT_DIR/mongod.conf /etc/mongod.conf
-    sudo cp $VAGRANT_DIR/hosts /etc/hosts
-    sudo sed -i "s/GUEST_IP/$1/g" /etc/hosts
 
     sudo systemctl enable mongod.service
     sudo systemctl start mongod
@@ -135,13 +133,13 @@ provision()
     createAndMoveToHomeBinDir
     installPackages
     installMongo
-    initReplicateDB $1
+    initReplicateDB
     installNode
 }
 
 if [ ! -f "/var/vagrant_provision" ]; then
     sudo touch /var/vagrant_provision
-    provision $1
+    provision
 else
     echo "Machine already provisioned. Run 'vagrant destroy' and 'vagrant up' to re-create."
 fi
