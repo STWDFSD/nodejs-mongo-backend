@@ -1,4 +1,4 @@
-# nodejs-mongo-backend basic demo app
+# Node.js MongoDB back-end basic demo app.
 Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB collection using the library devextreme-query-mongodb.
 
 # 1. Database server setup
@@ -9,6 +9,9 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 - [Continue to step 2](#2-run-the-project).
 
 ## Option 2: Mongo DB local installation
+<details>
+<summary>Click to expand!</summary>
+
 ### Install Nodejs
 Todo: Document how to install Nodejs  
 ### Install MongoDB
@@ -53,13 +56,24 @@ mongod --replSet rs0 --dbpath /mongodb/data
 ## Import test collection
 Import the [restaurants](https://raw.githubusercontent.com/mongodb/docs-assets/drivers/restaurants.json) collection into the test database as shown in this readme file:
 https://github.com/mongodb/docs-assets/tree/drivers
+</details>
 
 # 2. Run the project
 Once the mongodb server is running you can continue and run this project
 ## From the Vagrant virtual machine
 The Nodejs server is installed and automatically started within the Vagrant virtual machine. You should be able to access at:  
-`curl -i http://<GUEST_IP>:8080/api/grades`  
+`curl -i http://<GUEST_IP>:8080/api/grades`
 
+### The following endpoints are available for testing:
+
+1. GET /grades: this endpoint uses the library devextreme-query-mongodb to format request/response parameters. So it can be used to test DevExtreme components.
+
+2. (GET, POST, PUT, PATCH, DELETE) /api/grades: this endpoint exposes a basic CRUD functionality.
+
+3. GET /grades/stream: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection (similar to what we have in the Ratpack back-end demo app).
+
+4. GET /frontend: This is an endpoint for testing the back-end endpoints. It responds with an HTML page that displays a list of Grades and dynamically updates the table when a notification (Server-sent event) is received.
+  
 ## From a local Nodejs installation
 You can start the nodejs server by running:  
 `node app`  
