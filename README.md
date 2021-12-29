@@ -4,7 +4,6 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 # 1. Database server setup
 ## Option 1: VirtualBox Vagrant setup
 - Change directory to the base path of this project.
-- Open the file `Vagrantfile` and edit the `GUEST_IP` value, use an available local network IP, this is the IP address that will be asigned to the virtual machine.
 - Execute the `vagrant up` command, once the process completes an Ubuntu-MongoDB virtual machine will be running.
 - [Continue to step 2](#2-run-the-project).
 
@@ -62,17 +61,17 @@ https://github.com/mongodb/docs-assets/tree/drivers
 Once the mongodb server is running you can continue and run this project
 ## From the Vagrant virtual machine
 The Nodejs server is installed and automatically started within the Vagrant virtual machine. You should be able to access at:  
-`curl -i http://<GUEST_IP>:8080/api/grades`
+`http://localhost:8080/grades?take=10`
 
 ### The following endpoints are available for testing:
 
-1. GET /grades: this endpoint uses the library devextreme-query-mongodb to format request/response parameters. So it can be used to test DevExtreme components.
+1. **GET /grades**: this endpoint uses the library [devextreme-query-mongodb](https://github.com/oliversturm/devextreme-query-mongodb) to format request/response parameters. So it can be used to test DevExtreme components.
 
-2. (GET, POST, PUT, PATCH, DELETE) /api/grades: this endpoint exposes a basic CRUD functionality.
+2. **(GET, POST, PUT, PATCH, DELETE) /api/grades**: this endpoint exposes a basic CRUD functionality.
 
-3. GET /grades/stream: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection (similar to what we have in the Ratpack back-end demo app).
+3. **GET /grades/stream**: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection (similar to what we have in the Ratpack back-end demo app).
 
-4. GET /frontend: This is an endpoint for testing the back-end endpoints. It responds with an HTML page that displays a list of Grades and dynamically updates the table when a notification (Server-sent event) is received.
+4. **GET /frontend**: This is an endpoint for testing the back-end endpoints. It responds with an HTML page that displays a list of Grades and dynamically updates the table when a notification (Server-sent event) is received.
   
 ## From a local Nodejs installation
 You can start the nodejs server by running:  
@@ -81,7 +80,7 @@ You can start the nodejs server by running:
 # 3. Update the collection using mongosh
 
 Connect to mongosh \
-`mongosh mongodb://<MONGODB_SERVER_IP>:27017/test`
+`mongosh mongodb://localhost:27017/test`
 
 Then within mongosh
 To update a single document:  
