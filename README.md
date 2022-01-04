@@ -3,6 +3,8 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 
 # 1. Database server setup
 ## Option 1: VirtualBox Vagrant setup
+- [Download](https://www.virtualbox.org/wiki/Downloads) and install VirtualBox.
+- [Download](https://www.vagrantup.com/downloads) and install Vagrant.
 - Open a command line and change directory to the base path of this project.
 - Execute the `vagrant up` command, once the process completes an Ubuntu-MongoDB virtual machine will be running.
 - [Continue to step 2](#2-run-the-project).
