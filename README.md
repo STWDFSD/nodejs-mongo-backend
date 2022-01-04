@@ -3,7 +3,7 @@ Basic nodejs back-end that exposes CRUD functionality and queries to a MongoDB c
 
 # 1. Database server setup
 ## Option 1: VirtualBox Vagrant setup
-- Change directory to the base path of this project.
+- Open a command line and change directory to the base path of this project.
 - Execute the `vagrant up` command, once the process completes an Ubuntu-MongoDB virtual machine will be running.
 - [Continue to step 2](#2-run-the-project).
 
@@ -69,7 +69,7 @@ The Nodejs server is installed and automatically started within the Vagrant virt
 
 2. **(GET, POST, PUT, PATCH, DELETE) /api/grades**: this endpoint exposes a basic CRUD functionality.
 
-3. **GET /grades/stream**: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection (similar to what we have in the Ratpack back-end demo app).
+3. **GET /grades/stream**: This endpoint uses mongo Change Streams to respond with a Server-sent event when any operation (insert, update, delete) is performed on the Grades collection.
 
 4. **GET /frontend**: This is an endpoint for testing the back-end endpoints. It responds with an HTML page that displays a list of Grades and dynamically updates the table when a notification (Server-sent event) is received.
   
