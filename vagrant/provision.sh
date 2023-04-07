@@ -43,7 +43,7 @@ installMongo()
     echo "Installing mongodb ${COMPONENT_VERSION}"
     sudo apt-get install gnupg
     wget -qO - "https://www.mongodb.org/static/pgp/server-${VERSION}.asc" | sudo apt-key add -
-    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/${VERSION} multiverse" | sudo tee "/etc/apt/sources.list.d/mongodb-org-${VERSION}.list"
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/${VERSION} multiverse" | sudo tee "/etc/apt/sources.list.d/mongodb-org-${VERSION}.list" >/dev/null 2>&1
     sudo apt-get update
     mongo_packages=("mongodb-org=${COMPONENT_VERSION}" "mongodb-org-server=${COMPONENT_VERSION}" "mongodb-org-shell=${COMPONENT_VERSION}" "mongodb-org-mongos=${COMPONENT_VERSION}" "mongodb-org-tools=${COMPONENT_VERSION}"  mongodb-mongosh)
     sudo apt-get install -y "${mongo_packages[@]}"
