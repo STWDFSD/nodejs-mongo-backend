@@ -5,8 +5,9 @@
 # This must be greater than port 1024.
 MONGODB_PORT=27017
 HTTP_SERVER_PORT=8080
-MONGO_VERSION="5.0"              # 4.4
-MONGO_COMPONENT_VERSION="5.0.15" # 4.4.19
+SSH_PORT=2226
+MONGO_VERSION="5.0"              # 4.4, 5.0
+MONGO_COMPONENT_VERSION="5.0.15" # 4.4.19, 5.0.15
 
 APP_HOME_DIR="/var/www/app"
 Vagrant.configure(2) do |config|
@@ -16,7 +17,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
      vb.name = "mongo_nodejs_vm"
-     vb.memory = "1024"
+     vb.memory = "2048"
    end
 
   # This prevents vagrant checking kernel and guest-additions for subsequent
@@ -34,6 +35,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.network "forwarded_port", guest: 8080, host: HTTP_SERVER_PORT, host_ip: "127.0.0.1"
   config.vm.network "forwarded_port", guest: 27017, host: MONGODB_PORT, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 22, host: SSH_PORT, id: "ssh"
 
   config.vm.synced_folder "./app/", APP_HOME_DIR, create: true,  type: "rsync",
      rsync__exclude: ['.git/', 'node_modules/', '.vagrant/']

@@ -86,7 +86,7 @@ installNode()
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-    nvm install node
+    nvm install 16
 
     # echo 'npm set prefix $HOME/.npm' >> $HOME/.bashrc
     # echo 'export PATH=$HOME/.npm/bin:$PATH' >> $HOME/.bashrc
@@ -94,7 +94,7 @@ installNode()
     source $HOME/.bashrc
 
     # PM2 makes it possible to daemonize applications so that they will run in the background as a service
-    npm install pm2@latest -g
+    npm install pm2 -g
 
     cd $APP_HOME_DIR
     npm install express
